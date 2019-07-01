@@ -144,11 +144,21 @@ class BookController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Book $book)
+    public function destroy($id)
     {
-        $book->delete();
+        $book = Book::find($id);
         $data = $book->toArray();
 
+        if (is_null($book)) {
+            $response = [
+                'success' => false,
+                'data' => 'Empty',
+                'message' => 'Book not found.'
+            ];
+            return response()->json($response, 404);
+        }
+        
+        $book->delete();
         $response = [
             'success' => true,
             'data' => $data,
